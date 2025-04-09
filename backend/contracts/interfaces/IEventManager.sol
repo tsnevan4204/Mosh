@@ -15,19 +15,7 @@ interface IEventManager {
 
     function updateTicketPrice(uint256 eventId, uint256 newPrice) external;
 
-    function cancelEvent(uint256 eventId) external;
+    function cancelEvent(uint256 eventId) external payable;
 
-    function withdrawFunds(uint256 eventId) external;
-
-    function events(uint256 eventId) external view returns (
-        uint256 id,
-        address organizer,
-        string memory metadataURI,
-        uint256 ticketPrice,
-        uint256 maxTickets,
-        uint256 ticketsSold,
-        uint256 eventDate,
-        bool cancelled,
-        bool withdrawn
-    );
+    function getEventBuyers(uint256 eventId) external view returns (address[] memory);
 }

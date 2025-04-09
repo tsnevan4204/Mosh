@@ -1,33 +1,22 @@
-/* temporary adjustments to balance due to testTemplate.test.js 
-do not run this either tbh */
-
 const { ethers } = require("hardhat");
-require("dotenv").config();
 
 async function main() {
   const provider = ethers.provider;
 
-  // Load wallets from .env
   const organizer = new ethers.Wallet(process.env.ORGANIZER_PRIVATE_KEY, provider);
-  const buyerOne = new ethers.Wallet(process.env.BUYER_ONE_PRIVATE_KEY, provider);
-
-  const amount = ethers.parseEther("0.04");
-
-  console.log(`Sending 0.04 ETH from ${organizer.address} → ${buyerOne.address}`);
+  const owner = "0xEf9334A1C6B77d09780eaD908D8cCdB9fA211Ae9"; // Replace with actual owner address if different
 
   const tx = await organizer.sendTransaction({
-    to: buyerOne.address,
-    value: amount
+    to: owner,
+    value: ethers.parseEther("0.02")
   });
 
-  console.log("Transaction sent. Waiting for confirmation...");
-  const receipt = await tx.wait();
-
-  console.log("✅ Transfer complete!");
-  console.log("🔗 Tx hash:", receipt.hash);
+  console.log("⛽ Sending 0.02 ETH from organizer...");
+  await tx.wait();
+  console.log(`✅ Sent 0.02 ETH to ${owner}`);
 }
 
 main().catch((error) => {
-  console.error(error);
+  console.error("❌ Transaction failed:", error);
   process.exitCode = 1;
 });

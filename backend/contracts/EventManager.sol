@@ -18,25 +18,24 @@ contract EventManager is Ownable, IEventManager {
         uint256 ticketsSold;
         uint256 eventDate;
         bool cancelled;
-        bool withdrawn;
     }
 
     mapping(uint256 => EventData) public events;
     mapping(uint256 => address[]) public eventBuyers;
     mapping(uint256 => mapping(address => uint256)) public payments;
+    mapping(uint256 => uint256) public totalReceived;
+
 
     // 🔐 Custom Errors
     error NotOrganizer();
     error EventCancelled();
     error AlreadyCancelled();
     error EventInPast();
-    error EventNotHappenedYet();
     error SoldOut();
     error IncorrectPayment();
     error RefundFailed();
-    error AlreadyWithdrawn();
-    error WithdrawFailed();
     error NotAllowedToBuyOwnTicket();
+    error ForwardFailed();
 
     // 📢 Events
     event EventCreated(uint256 indexed eventId, address indexed organizer);
@@ -66,8 +65,7 @@ contract EventManager is Ownable, IEventManager {
             maxTickets: maxTickets,
             ticketsSold: 0,
             eventDate: eventDate,
-            cancelled: false,
-            withdrawn: false
+            cancelled: false
         });
 
         emit EventCreated(eventId, msg.sender);
@@ -79,22 +77,28 @@ contract EventManager is Ownable, IEventManager {
         if (evt.cancelled) revert EventCancelled();
         if (block.timestamp >= evt.eventDate) revert EventInPast();
         if (evt.ticketsSold >= evt.maxTickets) revert SoldOut();
-        if (msg.sender == evt.organizer) revert NotAllowedToBuyOwnTicket();
         if (msg.value != evt.ticketPrice) revert IncorrectPayment();
+        if (msg.sender == evt.organizer) revert NotAllowedToBuyOwnTicket();
 
         evt.ticketsSold += 1;
 
         uint256 ticketId = ticketNFT.mintTicket(msg.sender, evt.metadataURI, eventId);
         emit TicketPurchased(eventId, ticketId, msg.sender);
-
+        
+        totalReceived[eventId] += msg.value;
         payments[eventId][msg.sender] += msg.value;
         eventBuyers[eventId].push(msg.sender);
+
+        // 💸 Immediately forward payment to organizer
+        (bool sent, ) = payable(evt.organizer).call{value: msg.value}("");
+        if (!sent) revert ForwardFailed();
     }
 
     function updateEventMetadataURI(uint256 eventId, string calldata newURI) external override {
         EventData storage evt = events[eventId];
         if (msg.sender != evt.organizer) revert NotOrganizer();
         if (evt.cancelled) revert EventCancelled();
+        if (block.timestamp >= evt.eventDate) revert EventInPast();
 
         evt.metadataURI = newURI;
         emit MetadataUpdated(eventId, newURI);
@@ -104,15 +108,25 @@ contract EventManager is Ownable, IEventManager {
         EventData storage evt = events[eventId];
         if (msg.sender != evt.organizer) revert NotOrganizer();
         if (evt.cancelled) revert EventCancelled();
+        if (block.timestamp >= evt.eventDate) revert EventInPast();
 
         evt.ticketPrice = newPrice;
         emit TicketPriceUpdated(eventId, newPrice);
     }
 
-    function cancelEvent(uint256 eventId) external override {
+    function getEventBuyers(uint256 eventId) external view returns (address[] memory) {
+        return eventBuyers[eventId];
+    }
+
+    function cancelEvent(uint256 eventId) external payable {
         EventData storage evt = events[eventId];
+
         if (msg.sender != evt.organizer) revert NotOrganizer();
         if (evt.cancelled) revert AlreadyCancelled();
+        if (block.timestamp >= evt.eventDate) revert EventInPast();
+
+        uint256 expectedRefund = totalReceived[eventId];
+        if (msg.value != expectedRefund) revert IncorrectPayment();
 
         evt.cancelled = true;
         emit EventWasCancelled(eventId);
@@ -128,17 +142,4 @@ contract EventManager is Ownable, IEventManager {
         }
     }
 
-    function withdrawFunds(uint256 eventId) external override {
-        EventData storage evt = events[eventId];
-        if (msg.sender != evt.organizer) revert NotOrganizer();
-        if (evt.cancelled) revert EventCancelled();
-        if (block.timestamp <= evt.eventDate) revert EventNotHappenedYet();
-        if (evt.withdrawn) revert AlreadyWithdrawn();
-
-        evt.withdrawn = true;
-
-        uint256 amount = evt.ticketPrice * evt.ticketsSold;
-        (bool sent, ) = payable(evt.organizer).call{value: amount}("");
-        if (!sent) revert WithdrawFailed();
-    }
 }
