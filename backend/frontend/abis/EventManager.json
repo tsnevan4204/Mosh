@@ -1,0 +1,333 @@
+{
+  "address": "0xaBcBb819aaeC9f77A940Ff4087DF1DD4B7D81659",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_ticketNFT",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "eventId",
+          "type": "uint256"
+        }
+      ],
+      "name": "EventCancelled",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "eventId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "organizer",
+          "type": "address"
+        }
+      ],
+      "name": "EventCreated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "eventId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "newURI",
+          "type": "string"
+        }
+      ],
+      "name": "MetadataUpdated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "previousOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "eventId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "newPrice",
+          "type": "uint256"
+        }
+      ],
+      "name": "TicketPriceUpdated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "eventId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "ticketId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "buyer",
+          "type": "address"
+        }
+      ],
+      "name": "TicketPurchased",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "eventId",
+          "type": "uint256"
+        }
+      ],
+      "name": "buyTicket",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "eventId",
+          "type": "uint256"
+        }
+      ],
+      "name": "cancelEvent",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "metadataURI",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "ticketPrice",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "maxTickets",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "eventDate",
+          "type": "uint256"
+        }
+      ],
+      "name": "createEvent",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "events",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "organizer",
+          "type": "address"
+        },
+        {
+          "internalType": "string",
+          "name": "metadataURI",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "ticketPrice",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "maxTickets",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "ticketsSold",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "eventDate",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bool",
+          "name": "cancelled",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "nextEventId",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "renounceOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "ticketNFT",
+      "outputs": [
+        {
+          "internalType": "contract Ticket",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "eventId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "newURI",
+          "type": "string"
+        }
+      ],
+      "name": "updateEventMetadataURI",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "eventId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "newPrice",
+          "type": "uint256"
+        }
+      ],
+      "name": "updateTicketPrice",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ]
+}
